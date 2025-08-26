@@ -252,16 +252,16 @@ body {
     color: white; /* Match text color */
 }
 
-.option-button.whatsapp-button {
-    background-color: #25D366; /* WhatsApp green */
-}
-
 .option-button:hover {
     background-color: #AA7A44;
 }
 
+.option-button.whatsapp-button {
+    background-color: #25D366; /* WhatsApp green */
+}
+
 .option-button.whatsapp-button:hover {
-    background-color: #128C7E; /* Darker WhatsApp green on hover */
+    background-color: #21BE5C; /* Darker WhatsApp green on hover */
 }
 
 /* New classes for specific button colors */
@@ -271,9 +271,5 @@ body {
 
 /* Hover effects for the new button classes */
 .option-button.call-us-button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-}
-
-.option-button.whatsapp-button:hover {
-    background-color: #128C7E; /* Darker WhatsApp green on hover */
+    background-color: #006fe5; /* Darker blue on hover */
 }
