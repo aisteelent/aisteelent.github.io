@@ -204,281 +204,76 @@ body {
 }
 
 
-/* Styles for the actual inquiry form content */
-.inquiry-form-content {
-    background-color: #fff; /* Form content background, not individual fields */
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
-    padding: 20px; /* This padding applies to the whole content area */
-    width: 300px; /* Fixed width for the form */
-    max-height: 400px; /* Max height to allow scrolling if form is long */
-    overflow-y: auto; /* Enable vertical scrolling for form content if it overflows */
+/* NEW: Styles for the new mobile buttons container */
+.mobile-button-options {
     position: absolute; /* Positions it relative to its parent (.inquiry-container) */
     bottom: calc(100% + 15px); /* Positions it above the toggle button with a 15px gap */
-    transform: translateY(10px); /* Starts slightly off for slide-up animation */
+    left: 50%; /* Center it horizontally */
+    transform: translateX(-50%); /* Adjust for horizontal centering */
+    display: flex; /* Always use flexbox */
+    flex-direction: column;
+    gap: 10px; /* Space between the two buttons */
+    /* NEW: Use opacity and pointer-events for smooth hide/show */
     opacity: 0;
-    visibility: hidden; /* Ensures it's not interactive when hidden */
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease; /* Smooth show/hide animation */
-    
-    /* Remove blur from here */
-    filter: none; 
+    pointer-events: none; /* Make it non-interactive when hidden */
+    transition: opacity 0.3s ease;
+    z-index: 999; /* Below the permanent close button but above other content */
 }
 
-/* Form alignment for both desktop (left) and mobile (right) */
-/* This ensures the form pops up aligned to the correct side of the button */
-.inquiry-container:not(.hidden) .inquiry-form-content {
-    /* Apply 'left:0' when inquiry-container has 'left' property set (desktop) */
-    left: 0;
-    right: auto;
-}
-
-@media (max-width: 768px) {
-    .inquiry-container:not(.hidden) .inquiry-form-content {
-        /* Apply 'right:0' when inquiry-container has 'right' property set (mobile) */
-        right: 0;
-        left: auto;
-    }
-}
-
-/* When the form is active/open */
-.inquiry-container.active .inquiry-form-content {
+/* Show the mobile buttons when the main container has the 'active' class */
+.inquiry-container.active .mobile-button-options {
     opacity: 1;
-    visibility: visible;
-    transform: translateY(0); /* Slides up to its final position */
+    pointer-events: auto; /* Make it interactive when active */
 }
 
-/* Styles for the close button inside the form */
-.inquiry-form-content .close-button {
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 24px;
-    cursor: pointer;
-    color: #888;
-    background: none;
+/* Styling for the individual buttons */
+.option-button {
+    width: 200px;
+    height: 50px;
+    background-color: #D29654;
+    color: white;
     border: none;
-    padding: 0;
-    line-height: 1; /* Ensures the 'x' is vertically centered */
-    outline: none; /* Removes focus outline */
-    z-index: 20; /* Ensure close button is always on top */
-}
-
-.inquiry-form-content .close-button:hover {
-    color: #333;
-}
-
-/* General form element styling within the popup */
-.inquiry-form-content h2 {
-    margin-top: 0;
-    color: #333;
-    font-size: 1.4em;
-    margin-bottom: 20px;
-    text-align: center;
-    position: relative; /* To make sure it's above the blur area */
-    z-index: 15; /* Higher than form-blur-area */
-}
-
-/* New container for elements that will be blurred */
-.form-blur-area {
-    /* Changed to relative positioning to allow content to dictate height */
-    position: relative; 
-    /* Set margin-top to 0 as requested, combined with form's margin-top for spacing */
-    margin-top: 0;
-    
-    /* Removed absolute positioning properties (top, left, right, bottom) */
-    /* as these are not used with relative positioning for sizing */
-    
-    box-sizing: border-box; /* Include padding in total dimensions */
-    
-    filter: blur(0px); /* Initially no blur */
-    transition: filter 0.3s ease; /* Smooth transition for blur */
-    z-index: 5; /* Below the overlay and title/close button */
-}
-
-.form-blur-area.blurred {
-    filter: blur(5px);
-    pointer-events: none; /* Disable interaction with blurred content */
-}
-
-
-/* Main form container - now inside form-blur-area */
-.inquiry-form-content form {
-    position: relative;
-    /* This margin-top provides spacing between h2's margin-bottom and the form content */
-    margin-top: 15px; 
-    transition: opacity 0.3s ease; /* Smooth transition for form elements when overlay is active */
-}
-
-.inquiry-form-content label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-    font-size: 0.9em;
-}
-
-/* Styles for the row containing Name and Number */
-.inquiry-form-content .form-row {
-    display: flex;
-    justify-content: space-evenly; /* Distributes space between items */
-    margin-bottom: 15px; /* Spacing below the row */
-}
-
-.inquiry-form-content .form-row input[type="text"] {
-    width: calc(50% - 7.5px);
-    margin-bottom: 0; /* Remove individual bottom margin */
-    box-sizing: border-box; /* Crucial: includes padding and border in the element's total width */
-    padding: 10px; /* Add padding to inputs */
-    border: 1px solid #ddd; /* Add border to inputs */
-    border-radius: 20px; /* Apply 20px border-radius as per the image */
-    font-size: 0.9em;
-}
-
-.inquiry-form-content input[type="email"] {
-    width: 100%; /* Should take full width of the parent (after parent's padding) */
-    padding: 10px;
-    margin-bottom: 15px; /* Consistent spacing after email field */
-    border: 1px solid #ddd;
-    border-radius: 20px; /* Apply 20px border-radius as per the image */
-    font-size: 0.9em;
-    box-sizing: border-box; /* Crucial: includes padding and border in the element's total width and height */
-}
-
-/* Textarea styling - now handling its own border and radius */
-.inquiry-form-content textarea {
-    width: 100%; /* Take full width of the parent */
-    padding: 10px;
-    margin-top: 0px; /* Updated as per your last instruction */
-    margin-bottom: 0; /* Remove bottom margin to make it flush with the button below */
-    border: 1px solid #ddd; /* Re-add border */
-    background: #fff; /* Re-add background */
-    resize: vertical; /* Allows vertical resizing by user */
-    min-height: 80px;
-    font-size: 0.9em;
-    box-sizing: border-box; /* Crucial for width calculation */
-    overflow-wrap: break-word; /* Ensures long words break and wrap */
-    word-wrap: break-word; /* For older browser compatibility */
-
-    /* Adjusted border-radius for attachment to the button below */
-    border-radius: 20px 20px 0 0; /* Top corners rounded, bottom corners sharp */
-    border-bottom: none; /* Remove bottom border to avoid double border with button */
-}
-
-/* Send Message Button styling */
-#sendMessageButton { /* Target the new button by its ID */
-    width: 100%; /* Full width to match textarea */
-    padding: 8px 10px; /* User's preferred padding: 8px vertical, 10px horizontal */
-    background-color: #D29654; /* Green background */
-    color: white; /* Text color */
-    border: 1px solid #AA7A44; /* Border to match background */
-    border-top: none; /* Remove top border to be flush with textarea */
-    cursor: pointer;
+    border-radius: 25px;
     font-size: 1em;
     font-weight: bold;
-    box-sizing: border-box; /* Include padding/border in total width/height */
-    transition: background-color 0.3s ease;
-    outline: none; /* Removes focus outline */
-    display: flex; /* Enable Flexbox for icon and text alignment */
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    gap: 8px; /* Space between icon and text */
-
-    /* Adjusted border-radius for bottom corners */
-    border-radius: 0 0 20px 20px; /* Top corners sharp, bottom corners rounded */
-    margin-top: -1px; /* To make it visually flush with the textarea above */
-}
-
-#sendMessageButton:hover {
-    background-color: #AA7A44; /* Darker green on hover */
-}
-
-/* Specific styling for the SVG inside the Send Message button */
-#sendMessageButton svg {
-    width: 20px; /* Explicitly set width for consistent centering */
-    height: 20px; /* Explicitly set height for consistent centering */
-    flex-shrink: 0; /* Prevent the SVG from shrinking */
-    /* fill: #ffffff; /* This is already set in the HTML, but can be overridden here if needed */
-}
-
-/* NEW: Styles for the placeholder to visually center the text with icon */
-#sendMessageButton .icon-placeholder {
-    width: 20px; /* Match the width of the SVG icon */
-    height: 20px; /* Match the height of the SVG icon */
-    visibility: hidden; /* Make it invisible */
-    flex-shrink: 0; /* Prevent it from shrinking */
-}
-
-/* Remove any lingering styles from the old submit button if they are not explicitly overridden */
-/* This part ensures the old icon styles are gone */
-.inquiry-form-content button[type="submit"]::after {
-    content: none; /* Remove the icon */
-}
-
-/* Ensure any other general button[type="submit"] styles don't conflict,
-   or specifically target #sendMessageButton if there are many submit buttons */
-.inquiry-form-content button[type="submit"] {
-    /* Reset any inherited absolute positioning or sizing if not already reset by #sendMessageButton */
-    position: static;
-    transform: none;
-    width: auto; /* Reset to auto or explicitly set by #sendMessageButton */
-    height: auto; /* Reset to auto or explicitly set by #sendMessageButton */
-    padding: 0; /* Reset if not already set by #sendMessageButton */
-    margin: 0; /* Reset if not already set by #sendMessageButton */
-    border: none; /* Reset if not already set by #sendMessageButton */
-    border-radius: 0; /* Reset if not already set by #sendMessageButton */
-    background: none; /* Reset if not already set by #sendMessageButton */
-    box-shadow: none; /* Reset if not already set by #sendMessageButton */
-}
-
-
-/* Styles for the overlay (spinner, message) */
-.inquiry-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    text-decoration: none; /* Remove underline for links */
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 10; /* Ensures it's above the blurred content */
-    border-radius: 8px; /* Match form content border-radius */
+    gap: 10px; /* Added for spacing between icon and text */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
-.inquiry-overlay.visible {
-    opacity: 1;
-    visibility: visible;
+/* New CSS to style the Font Awesome icons */
+.option-button i.fa {
+    font-size: 22px;
+    color: white; /* Match text color */
 }
 
-/* Spinner styles */
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #ccc;
-    border-top: 4px solid #50ab3c; /* Green color for the spinning part */
-    border-radius: 50%;
-    margin-bottom: 20px; /* Space between spinner and message */
-    animation: spin 1s linear infinite;
-    display: none; /* Hidden by default */
+.option-button.whatsapp-button {
+    background-color: #25D366; /* WhatsApp green */
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+.option-button:hover {
+    background-color: #AA7A44;
 }
 
-/* Message style */
-.overlay-message {
-    color: #333;
-    font-size: 1.1em;
-    text-align: center;
-    margin: 0;
-    display: none; /* Hidden by default */
+.option-button.whatsapp-button:hover {
+    background-color: #128C7E; /* Darker WhatsApp green on hover */
+}
+
+/* New classes for specific button colors */
+.option-button.call-us-button {
+    background-color: #007bff; /* Blue color for Call Us */
+}
+
+/* Hover effects for the new button classes */
+.option-button.call-us-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.option-button.whatsapp-button:hover {
+    background-color: #128C7E; /* Darker WhatsApp green on hover */
 }
