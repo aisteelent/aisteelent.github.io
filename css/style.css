@@ -501,9 +501,9 @@ ol {
 
 .hero__text .hero__social a {
 	display: inline-block;
-	font-size: 22px;
+	font-size: 30px;
 	color: #ffffff;
-	margin-right: 25px;
+	margin-right: 35px;
 	-webkit-transition: all, 0.3s;
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;
