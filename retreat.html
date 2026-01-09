@@ -54,6 +54,63 @@
 	
 	<link rel="stylesheet" href="css/photoswipe.css">
 
+<style>
+/* 🎨 Use CSS Variables for Easy Customization */
+:root {
+    --facebook-color: #3b5998;
+    --twitter-color: #1da1f2;
+    --linkedin-color: #0077b5;
+    --whatsapp-color: #25d366;
+    --telegram-color: #0088CC; /* Telegram color added */
+    --general-share-color: #777777; /* General/Fallback color added */
+    --button-size: 38px;
+}
+
+.share-buttons {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    margin-top: 5px;
+}
+
+/* Base style for all share buttons (Anchor tags and Button element) */
+.share-button {
+    /* Set common display properties */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; /* Ensures button element has a pointer */
+
+    /* Set common size and shape */
+    width: var(--button-size);
+    height: var(--button-size);
+    border-radius: 50%; 
+    font-size: 18px;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+
+    /* Reset button specific styles */
+    border: none;
+    padding: 0;
+    line-height: 1; 
+    color: white; 
+}
+
+/* Specific Platform Colors */
+.share-button.facebook { background-color: var(--facebook-color); }
+.share-button.twitter { background-color: var(--twitter-color); }
+.share-button.linkedin { background-color: var(--linkedin-color); }
+.share-button.whatsapp { background-color: var(--whatsapp-color); }
+.share-button.telegram { background-color: var(--telegram-color); }
+.share-button.general-share { 
+    background-color: var(--general-share-color); 
+}
+
+/* Hover Effect */
+.share-button:hover {
+    transform: translateY(-2px); /* Slight lift effect */
+    opacity: 0.9;
+}
+</style>
+
 </head>
 
 <body>
@@ -311,6 +368,33 @@
             <span>Category:</span>
             <p>Commercial, Interior Design & Build</p>
         </div>
+		<div class="product__details__widget__item">
+                            <span>Share:</span>
+                            <div id="share-buttons-container" class="share-buttons" 
+                                data-title="The Retreat, Community Center Project" 
+                                data-text="Check out this incredible community center project: " 
+                                data-hashtags="Architecture,InteriorDesign,WaveEstate">
+                                
+                                <a class="share-button facebook" target="_blank" title="Share on Facebook">
+                                    <i class="fa fa-facebook"></i>
+                                </a>
+                                <a class="share-button twitter" target="_blank" title="Share on X (Twitter)">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                                <a class="share-button linkedin" target="_blank" title="Share on LinkedIn">
+                                    <i class="fa fa-linkedin"></i>
+                                </a>
+                                <a class="share-button whatsapp" target="_blank" title="Share on WhatsApp">
+                                    <i class="fa fa-whatsapp"></i>
+                                </a>
+                                <a class="share-button telegram" target="_blank" title="Share on Telegram">
+                                    <i class="fa fa-telegram"></i>
+                                </a>
+                                <button class="share-button general-share" title="Share via Native Dialogue">
+                                    <i class="fa fa-share-alt"></i>
+                                </button>
+                            </div>
+                        </div>
     </div>
 </div>
             </div>
@@ -412,6 +496,81 @@
   });
 
   lightbox.init();
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('share-buttons-container');
+    if (!container) return; 
+
+    // Get dynamic data from the container
+    const pageUrl = window.location.href;
+    const url = encodeURIComponent(pageUrl);
+    const title = encodeURIComponent(container.getAttribute('data-title') || 'Check out this page');
+    const text = encodeURIComponent(container.getAttribute('data-text') || 'Check this out: ') + title;
+    const hashtags = container.getAttribute('data-hashtags') || '';
+
+    // --- 1. Define Share URLs ---
+    const shareUrls = {
+        facebook: `https://www.facebook.com/sharer/sharer.php?u=${url}`,
+        twitter: `https://twitter.com/intent/tweet?url=${url}&text=${text}&hashtags=${hashtags}`,
+        linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${url}&title=${title}`,
+        whatsapp: `https://api.whatsapp.com/send?text=${text}%20${url}`,
+        telegram: `https://telegram.me/share/url?url=${url}&text=${text}`
+    };
+
+    // --- 2. Set HREFs for specific platforms ---
+    container.querySelectorAll('.share-button').forEach(button => {
+        const platform = button.classList[1]; 
+        if (shareUrls[platform]) {
+            button.setAttribute('href', shareUrls[platform]);
+        }
+    });
+
+    // --- 3. Handle General Share Button (Web Share API) ---
+    const generalShareButton = container.querySelector('.general-share');
+    if (generalShareButton) {
+        if (navigator.share) {
+            // Web Share API is supported (mostly mobile)
+            generalShareButton.addEventListener('click', async () => {
+                try {
+                    await navigator.share({
+                        title: title,
+                        text: text,
+                        url: pageUrl
+                    });
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                    // Fallback to simple link copy if the user cancels or an error occurs
+                    fallbackCopyLink(pageUrl, generalShareButton);
+                }
+            });
+        } else {
+            // Web Share API is not supported (mostly desktop/older browsers)
+            generalShareButton.addEventListener('click', () => {
+                fallbackCopyLink(pageUrl, generalShareButton);
+            });
+        }
+    }
+});
+
+/**
+ * Fallback function to copy the link to the clipboard.
+ */
+function fallbackCopyLink(url, buttonElement) {
+    navigator.clipboard.writeText(url).then(() => {
+        // Provide visual feedback
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = '<i class="fa fa-check"></i>'; // Change icon to a checkmark
+        setTimeout(() => {
+            buttonElement.innerHTML = originalText; // Revert after 2 seconds
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+        // Alert the user if clipboard access failed entirely
+        alert('Could not automatically copy the link. Please copy this URL manually: ' + url);
+    });
+}
 </script>
 
 </body>
